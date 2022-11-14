@@ -5,6 +5,11 @@ canvas.height = 480;
 
 document.body.appendChild(canvas);
 
+const nombreMonstres = 6;
+const monstreReady = [];
+const monstreImage = [];
+const monstre = [];
+
 let bgReady = false;
 const bgImage = new Image();
 bgImage.onload = function() {
@@ -19,23 +24,30 @@ herosImage.onload = function() {
 }
 herosImage.src = "images/hero.png";
 
-let monstreReady = false;
-const monstreImage = new Image();
-monstreImage.onload = function() {
-    monstreReady = true;
+for (let i=0; i < nombreMonstres; i++) {
+    monstreReady[i] = false;
+    monstreImage[i] = new Image();
+    monstreImage[i].onload = function() {
+        monstreReady[i] = true;
+    }
+    if (i % 2) {
+        monstreImage[i].src = "images/monster2.png";
+    } else {
+        monstreImage[i].src = "images/monster.png";
+    }
+    monstre[i] = {
+        x: 0,
+        y: 0
+    };
 }
-monstreImage.src = "images/monster.png";
 
 const heros = {
     speed: 256,
     x: 0,
     y: 0
 };
-const monstre = {
-    x: 0,
-    y: 0
-};
 let monstresAttrapes = 0;
+let score = 0;
 
 const touchesAppyees = {};
 
@@ -43,15 +55,19 @@ function convertirCode(code) {
     let keyCode = 0;
     switch (code) {
         case ("ArrowDown"):
+        case ("KeyS"):
             keyCode = 40;
             break;
         case ("ArrowUp"):
+        case ("KeyW"):
             keyCode = 38;
             break;
         case ("ArrowLeft"):
+        case ("KeyA"):
             keyCode = 37;
             break;
         case ("ArrowRight"):
+        case ("KeyD"):
             keyCode = 39;
             break;
     }
@@ -71,13 +87,14 @@ addEventListener("keyup", function(e) {
 });
 
 function reset() {
+    monstresAttrapes = 0;
     heros.x = canvas.width / 2;
     heros.y = canvas.height / 2;
 
-    monstre.x = 32 + (Math.random() * (canvas.width - 96));
-    monstre.y = 32 + (Math.random() * (canvas.height - 96));
-
-    console.log(monstre);
+    for (let i = 0; i < nombreMonstres; i++) {
+        monstre[i].x = 32 + (Math.random() * (canvas.width - 96));
+        monstre[i].y = 32 + (Math.random() * (canvas.height - 96));
+    }
 }
 
 function update(modifier) {
@@ -95,13 +112,21 @@ function update(modifier) {
     }
 
     // Y a-t-il contact ?
-    if (
-        heros.x <= (monstre.x + 32)
-        && monstre.x <= (heros.x + 32)
-        && heros.y <= (monstre.y + 32)
-        && monstre.y <= (heros.y + 32)
-    ) {
-        ++monstresAttrapes;
+    for (i = 0; i < nombreMonstres; i++) {
+        if (
+            heros.x <= (monstre[i].x + 32)
+            && monstre[i].x <= (heros.x + 32)
+            && heros.y <= (monstre[i].y + 32)
+            && monstre[i].y <= (heros.y + 32)
+        ) {
+            ++monstresAttrapes;
+            ++score;
+            monstre[i].x = -33;
+            monstre[i].y = -33;
+        }
+    }
+
+    if (monstresAttrapes === nombreMonstres) {
         reset();
     }
 }
@@ -113,8 +138,10 @@ function render() {
     if (herosReady) {
         ctx.drawImage(herosImage, heros.x, heros.y);
     }
-    if (monstreReady) {
-        ctx.drawImage(monstreImage, monstre.x, monstre.y);
+    for (let i = 0; i < nombreMonstres; i++) {
+        if (monstreReady[i]) {
+            ctx.drawImage(monstreImage[i], monstre[i].x, monstre[i].y);
+        }
     }
 
     // Score
@@ -122,7 +149,7 @@ function render() {
     ctx.font = "24px Helvetica";
     ctx.textAlign = "left";
     ctx.textBaseline = "top";
-    ctx.fillText(" Monstres attrappes : " + monstresAttrapes, 32, 32);
+    ctx.fillText(" Score : " + score, 32, 32);
 }
 
 function main() {
