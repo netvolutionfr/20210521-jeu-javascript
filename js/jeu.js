@@ -3,6 +3,8 @@ Jeu en JavaScript
 Attrapez les monstres !
  */
 
+let pseudo = prompt("Entrez votre pseudo :");
+
 // Création du canvas
 const canvas = document.createElement("canvas");
 const ctx = canvas.getContext("2d");
@@ -155,7 +157,7 @@ function render() {
     }
 
     // Score
-    divScore.innerHTML = "Score : " + score;
+    divScore.innerHTML = pseudo + " / Score : " + score;
 }
 
 function main() {
