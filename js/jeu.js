@@ -1,9 +1,19 @@
+/*
+Jeu en JavaScript
+Attrapez les monstres !
+ */
+
+// Création du canvas
 const canvas = document.createElement("canvas");
 const ctx = canvas.getContext("2d");
 canvas.width = 512;
 canvas.height = 480;
 
 document.body.appendChild(canvas);
+
+// Création d'un div pour le score
+const divScore = document.createElement("div");
+document.body.appendChild(divScore);
 
 const nombreMonstres = 6;
 const monstreReady = [];
@@ -145,11 +155,7 @@ function render() {
     }
 
     // Score
-    ctx.fillStyle = "rgb(250, 250, 250)";
-    ctx.font = "24px Helvetica";
-    ctx.textAlign = "left";
-    ctx.textBaseline = "top";
-    ctx.fillText(" Score : " + score, 32, 32);
+    divScore.innerHTML = "Score : " + score;
 }
 
 function main() {
