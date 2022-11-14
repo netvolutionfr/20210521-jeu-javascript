@@ -26,12 +26,23 @@ monstreImage.onload = function() {
 }
 monstreImage.src = "images/monster.png";
 
+let monstre2Ready = false;
+const monstre2Image = new Image();
+monstre2Image.onload = function() {
+    monstre2Ready = true;
+}
+monstre2Image.src = "images/monster2.png";
+
 const heros = {
     speed: 256,
     x: 0,
     y: 0
 };
 const monstre = {
+    x: 0,
+    y: 0
+};
+const monstre2 = {
     x: 0,
     y: 0
 };
@@ -43,15 +54,19 @@ function convertirCode(code) {
     let keyCode = 0;
     switch (code) {
         case ("ArrowDown"):
+        case ("KeyS"):
             keyCode = 40;
             break;
         case ("ArrowUp"):
+        case ("KeyW"):
             keyCode = 38;
             break;
         case ("ArrowLeft"):
+        case ("KeyA"):
             keyCode = 37;
             break;
         case ("ArrowRight"):
+        case ("KeyD"):
             keyCode = 39;
             break;
     }
@@ -77,7 +92,9 @@ function reset() {
     monstre.x = 32 + (Math.random() * (canvas.width - 96));
     monstre.y = 32 + (Math.random() * (canvas.height - 96));
 
-    console.log(monstre);
+    monstre2.x = 32 + (Math.random() * (canvas.width - 96));
+    monstre2.y = 32 + (Math.random() * (canvas.height - 96));
+
 }
 
 function update(modifier) {
@@ -104,6 +121,17 @@ function update(modifier) {
         ++monstresAttrapes;
         reset();
     }
+
+
+    if (
+        heros.x <= (monstre2.x + 32)
+        && monstre2.x <= (heros.x + 32)
+        && heros.y <= (monstre2.y + 32)
+        && monstre2.y <= (heros.y + 32)
+    ) {
+        ++monstresAttrapes;
+        reset();
+    }
 }
 
 function render() {
@@ -115,6 +143,9 @@ function render() {
     }
     if (monstreReady) {
         ctx.drawImage(monstreImage, monstre.x, monstre.y);
+    }
+    if (monstre2Ready) {
+        ctx.drawImage(monstre2Image, monstre2.x, monstre2.y);
     }
 
     // Score
